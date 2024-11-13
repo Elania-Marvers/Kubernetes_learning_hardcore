@@ -23,5 +23,32 @@
 
         <button type="submit">Submit</button>
     </form>
+
+    <h2>Comments:</h2>
+    <?php
+    // Database connection parameters
+    $host = 'postgresql-service';
+    $db = 'mydatabase';
+    $user = 'admin';
+    $pass = 'postgrespassword';
+
+    try {
+        // Connect to PostgreSQL
+        $conn = new PDO("pgsql:host=$host;dbname=$db", $user, $pass);
+
+        // Fetch all comments
+        $stmt = $conn->query("SELECT firstname, lastname, comment, created_at FROM fan_page_comment ORDER BY created_at DESC");
+
+        // Display comments
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            echo "<div class='comment'>";
+            echo "<p><strong>" . htmlspecialchars($row['firstname']) . " " . htmlspecialchars($row['lastname']) . "</strong> wrote on " . htmlspecialchars($row['created_at']) . ":</p>";
+            echo "<p>" . nl2br(htmlspecialchars($row['comment'])) . "</p>";
+            echo "</div>";
+        }
+    } catch (PDOException $e) {
+        echo "Error fetching comments: " . $e->getMessage();
+    }
+    ?>
 </body>
 </html>

@@ -1,0 +1,36 @@
+# Grafana Pod
+apiVersion: v1
+kind: Pod
+metadata:
+  name: grafana
+  labels:
+    app: grafana
+spec:
+  containers:
+  - name: grafana
+    image: grafana/grafana:latest
+    env:
+      - name: GF_SECURITY_ADMIN_USER
+        value: "admin"
+      - name: GF_SECURITY_ADMIN_PASSWORD
+        value: "admin_password"
+    ports:
+      - containerPort: 3000  # Grafana default port
+
+---
+
+# Grafana Service
+apiVersion: v1
+kind: Service
+metadata:
+  name: grafana-service
+spec:
+  type: NodePort
+  selector:
+    app: grafana
+  ports:
+    - name: grafana
+      protocol: TCP
+      port: 3000
+      targetPort: 3000
+      nodePort: 31301  # NodePort for accessing Grafana externally
